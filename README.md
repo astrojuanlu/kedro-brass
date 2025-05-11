@@ -145,7 +145,7 @@ These files can be created manually, or with the help of the CLI.
 For an example of a Spaceflights-like project that contains 1 Python pipeline,
 1 YAML pipeline with explicit configuration,
 and 1 YAML pipeline with a node list configuration,
-check out the `examples/` directory.
+check out the `example/` directory.
 
 ## FAQ
 
