@@ -2,9 +2,6 @@
 requires = ["uv-build>=0.6.6,<0.7"]
 build-backend = "uv_build"
 
-[tool.uv.build-backend]
-module-name = "kedro_brass"
-
 [project]
 name = "kedro-brass"
 readme = "README.md"
@@ -13,7 +10,9 @@ version = "0.1.dev0"
 license = {file = "LICENSE"}
 description = "Write your Kedro pipelines and nodes in YAML"
 dependencies = [
-    # "structlog",
+    "kedro>=0.19.12",
+    "pyyaml>=6.0",
+    "structlog",
 ]
 authors = [
     {name = "Juan Luis Cano Rodríguez", email = "hello@juanlu.space"}
