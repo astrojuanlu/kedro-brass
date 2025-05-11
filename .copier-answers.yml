@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v2025.05.4
+_src_path: gh:astrojuanlu/copier-pylib
+author_email: hello@juanlu.space
+author_name: Juan Luis Cano Rodríguez
+github_org: astrojuanlu
+package_name: kedro_brass
+project_name: kedro-brass
+short_description: Write your Kedro pipelines and nodes in YAML
