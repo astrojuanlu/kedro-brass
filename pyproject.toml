@@ -41,6 +41,9 @@ documentation = "https://kedro-brass.readthedocs.io"
 cli = [
     "cappa>=0.27.2",
 ]
+migrate = [
+    "kedro-inspect @ git+https://github.com/AlpAribal/kedro-inspect.git",
+]
 
 [project.scripts]
 kedro-brass = "kedro_brass.cli:main"

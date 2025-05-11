@@ -18,7 +18,7 @@ $ cd spaceflights-pandas-yaml
 Add `kedro-brass` to your project:
 
 ```
-$ uv add kedro-brass[cli]
+$ uv add kedro-brass[cli,migrate]
 ```
 
 And migrate the `data_science` pipeline to YAML:
