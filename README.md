@@ -160,7 +160,7 @@ This is **not** an official product by the Kedro team.
 
 Rather than contributing to this project, consider forking it
 and making it your own.
-(See also "status" FAQ item below.)
+(See also "status" FAQ item above.)
 
 Pull requests might or might not be accepted.
 
