@@ -1,5 +1,4 @@
-reporting:
-  nodes:
-  - compare_passenger_capacity_exp
-  - compare_passenger_capacity_go
-  - create_confusion_matrix
+nodes:
+- compare_passenger_capacity_exp
+- compare_passenger_capacity_go
+- create_confusion_matrix

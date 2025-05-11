@@ -1,7 +1,7 @@
 """Complete reporting pipeline for the spaceflights tutorial"""
 
-from .pipeline import create_pipeline
+from kedro_brass.project import create_pipeline_factory  # NOQA
+
+create_pipeline = create_pipeline_factory(__name__)
 
 __all__ = ["create_pipeline"]
-
-__version__ = "0.1"

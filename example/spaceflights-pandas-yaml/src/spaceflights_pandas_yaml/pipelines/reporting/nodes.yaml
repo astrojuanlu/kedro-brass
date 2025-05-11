@@ -1,14 +1,14 @@
 compare_passenger_capacity_exp:
-  func: spaceflights_pandas_yaml.pipelines.reporting.compare_passenger_capacity_exp
+  func: compare_passenger_capacity_exp
   inputs: preprocessed_shuttles
   outputs: shuttle_passenger_capacity_plot_exp
 
 compare_passenger_capacity_go:
-  func: spaceflights_pandas_yaml.pipelines.reporting.compare_passenger_capacity_go
+  func: compare_passenger_capacity_go
   inputs: preprocessed_shuttles
   outputs: shuttle_passenger_capacity_plot_go
 
 create_confusion_matrix:
-  func: spaceflights_pandas_yaml.pipelines.reporting.create_confusion_matrix
+  func: spaceflights_pandas_yaml.pipelines.reporting.nodes.create_confusion_matrix
   inputs: companies
   outputs: dummy_confusion_matrix

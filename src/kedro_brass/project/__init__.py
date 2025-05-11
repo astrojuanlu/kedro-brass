@@ -1,22 +1,25 @@
 import importlib.resources
 import typing as t
-import warnings
 
 from kedro.pipeline import Pipeline
 from kedro.pipeline.node import Node
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel, RootModel, TypeAdapter
 from yaml import safe_load
 
 
-class NodeConfig(BaseModel):
+class ExplicitNodeConfig(BaseModel):
     func: str
     inputs: list[str] | str | None
     outputs: list[str] | str | None
     name: str | None = None
 
 
-class PipelineConfig(BaseModel):
-    nodes: list[NodeConfig]
+class FullNodeConfig(ExplicitNodeConfig):
+    name: str | None = None
+
+
+class PipelineExplicitConfig(BaseModel):
+    nodes: list[FullNodeConfig]
     tags: list[str] | None = None
 
 
@@ -25,8 +28,11 @@ class PipelineNodeNamesConfig(BaseModel):
     tags: list[str] | None = None
 
 
-class PipelinesConfig(RootModel):
-    root: dict[str, PipelineConfig | PipelineNodeNamesConfig]
+PipelineConfig = TypeAdapter(PipelineExplicitConfig | PipelineNodeNamesConfig)
+
+
+class NodesConfig(RootModel):
+    root: dict[str, ExplicitNodeConfig]
 
 
 def _resolve_function(func_name: str, module_name: str | None = None) -> t.Callable:
@@ -42,68 +48,48 @@ def _resolve_function(func_name: str, module_name: str | None = None) -> t.Calla
     return func
 
 
-def _build_pipeline(
-    pipeline_config: PipelineConfig | PipelineNodeNamesConfig,
-) -> Pipeline:
-    if isinstance(pipeline_config, PipelineConfig):
-        nodes = [
-            Node(
-                func=_resolve_function(node.func),
-                inputs=node.inputs,
-                outputs=node.outputs,
-                name=node.name,
-            )
-            for node in pipeline_config.nodes
-        ]
-        return Pipeline(nodes)
-    elif isinstance(pipeline_config, PipelineNodeNamesConfig):
-        raise NotImplementedError(
-            "Only pipeline configurations with nodes are supported.",
-        )
+def _find_pipeline(pipeline_package_name: str) -> Pipeline:
+    pipeline_package = importlib.resources.files(pipeline_package_name)
+    if (pipeline_yaml_file := (pipeline_package / "pipeline.yaml")).is_file():
+        with pipeline_yaml_file.open("r") as fh:
+            pipeline_config_dict = safe_load(fh)
 
+        pipeline_config = PipelineConfig.validate_python(pipeline_config_dict)
+        if isinstance(pipeline_config, PipelineNodeNamesConfig):
+            if (node_yaml_file := (pipeline_package / "nodes.yaml")).is_file():
+                with node_yaml_file.open("r") as fh:
+                    node_config_dict = safe_load(fh)
 
-def find_pipelines(
-    raise_errors: bool = False, package_name: str | None = None
-) -> dict[str, Pipeline]:
-    if package_name is None:
-        from kedro.framework.project import PACKAGE_NAME
-
-        package_name = PACKAGE_NAME
-
-    if not package_name:
-        raise ValueError("Kedro project not configured and no package name provided.")
-
-    try:
-        pipelines_package = importlib.resources.files(f"{PACKAGE_NAME}.pipelines")
-    except ModuleNotFoundError:
-        if raise_errors:
-            raise
+                node_config = NodesConfig.model_validate(node_config_dict)
+                nodes = [
+                    Node(
+                        func=_resolve_function(
+                            node.func, pipeline_package_name + ".nodes"
+                        ),
+                        inputs=node.inputs,
+                        outputs=node.outputs,
+                        name=node_name,
+                    )
+                    for node_name, node in node_config.root.items()
+                ]
         else:
-            warnings.warn(
-                f"Error found while importing '{PACKAGE_NAME}.pipelines', "
-                "no pipelines will be registered.",
-                UserWarning,
-            )
-            return {}
+            nodes = [
+                Node(
+                    func=_resolve_function(node.func, pipeline_package_name + ".nodes"),
+                    inputs=node.inputs,
+                    outputs=node.outputs,
+                    name=node.name,
+                )
+                for node in pipeline_config.nodes
+            ]
 
-    pipelines_dict = {}
-    for pipeline_dir in pipelines_package.iterdir():
-        if (pipeline_yaml_file := (pipeline_dir / "pipeline.yaml")).is_file():
-            with pipeline_yaml_file.open("r") as fh:
-                pipeline_config_dict = safe_load(fh)
+        return Pipeline(nodes, tags=pipeline_config.tags)
 
-            pipeline_config = PipelinesConfig.model_validate(pipeline_config_dict)
-            for pipeline_name, pipeline_config in pipeline_config.root.items():
-                try:
-                    pipelines_dict[pipeline_name] = _build_pipeline(pipeline_config)
-                except Exception as e:
-                    if raise_errors:
-                        raise
-                    else:
-                        warnings.warn(
-                            f"Error found while building pipeline '{pipeline_name}': {e}",
-                            UserWarning,
-                        )
-                        continue
+    raise ValueError(f"No valid pipeline found in package '{pipeline_package_name}'.")
 
-    return pipelines_dict
+
+def create_pipeline_factory(package_name: str) -> t.Callable[[], Pipeline]:
+    def create_pipeline() -> Pipeline:
+        return _find_pipeline(package_name)
+
+    return create_pipeline
