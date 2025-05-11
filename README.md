@@ -38,6 +38,7 @@ Observe that the new directory structure is as follows:
 ```
 src/spaceflights_pandas_yaml/pipelines/data_science/
 ├── __init__.py
+├── __init__.py.bak
 ├── nodes.py
 ├── pipeline.py.bak
 └── pipeline.yaml
@@ -139,7 +140,7 @@ create_confusion_matrix:
 These files can be created manually, or with the help of the CLI.
 
 > ![WARNING] ⚠️
-> At the moment, node list configuration is not implemented in `kedro-brass migrate`.
+> At the moment, node list configuration is not implemented in the CLI.
 
 For an example of a Spaceflights-like project that contains 1 Python pipeline,
 1 YAML pipeline with explicit configuration,
