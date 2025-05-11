@@ -37,6 +37,14 @@ source = "https://github.com/astrojuanlu/kedro-brass"
 tracker = "https://github.com/astrojuanlu/kedro-brass/issues"
 documentation = "https://kedro-brass.readthedocs.io"
 
+[project.optional-dependencies]
+cli = [
+    "cappa>=0.27.2",
+]
+
+[project.scripts]
+kedro-brass = "kedro_brass.cli:main"
+
 [dependency-groups]
 test = [
     "mypy",
