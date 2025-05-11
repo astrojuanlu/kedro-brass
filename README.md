@@ -21,6 +21,12 @@ Add `kedro-brass` to your project:
 $ uv add kedro-brass[cli,migrate]
 ```
 
+> ![WARNING] ⚠️
+> The step above doesn't actually work because there's no real `kedro-brass`
+> release on PyPI yet.
+> If you want to add it to your project right now, use this instead:
+> `uv pip install "kedro-brass[cli,migrate] @ https://github.com/astrojuanlu/kedro-brass.git`
+
 And migrate the `data_science` pipeline to YAML:
 
 ```
@@ -132,7 +138,7 @@ create_confusion_matrix:
 
 These files can be created manually, or with the help of the CLI.
 
-> ![WARNING]
+> ![WARNING] ⚠️
 > At the moment, node list configuration is not implemented in `kedro-brass migrate`.
 
 For an example of a Spaceflights-like project that contains 1 Python pipeline,
