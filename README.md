@@ -25,7 +25,7 @@ $ uv add kedro-brass[cli,migrate]
 > The step above doesn't actually work because there's no real `kedro-brass`
 > release on PyPI yet.
 > If you want to add it to your project right now, use this instead:
-> `uv pip install "kedro-brass[cli,migrate] @ https://github.com/astrojuanlu/kedro-brass.git"`
+> `uv pip install "kedro-brass[cli,migrate] @ git+https://github.com/astrojuanlu/kedro-brass.git"`
 
 And migrate the `data_science` pipeline to YAML:
 
