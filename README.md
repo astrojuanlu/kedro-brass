@@ -21,7 +21,7 @@ Add `kedro-brass` to your project:
 $ uv add kedro-brass[cli,migrate]
 ```
 
-> ![WARNING] ⚠️
+> [!WARNING]
 > The step above doesn't actually work because there's no real `kedro-brass`
 > release on PyPI yet.
 > If you want to add it to your project right now, use this instead:
@@ -139,7 +139,7 @@ create_confusion_matrix:
 
 These files can be created manually, or with the help of the CLI.
 
-> ![WARNING] ⚠️
+> [!WARNING]
 > At the moment, node list configuration is not implemented in the CLI.
 
 For an example of a Spaceflights-like project that contains 1 Python pipeline,
